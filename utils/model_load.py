@@ -14,6 +14,7 @@ class LoadModel:
     def __init__(self):
         self.model = None
         self.tokenizer = None
+        self.device_map = None
         self.model_name = LLM_MODEL
 
     def load_model(self):
@@ -34,8 +35,9 @@ class LoadModel:
                 model = LoaderClass.from_pretrained(model_path, trust_remote_code=True).half().cuda()
             else:
                 from accelerate import dispatch_model
+                self.device_map = self.chatglm_conf_device_map(num_gpus)
                 model = LoaderClass.from_pretrained(model_path, trust_remote_code=True).half()
-                model = dispatch_model(model, device_map="auto")
+                model = dispatch_model(model, device_map=self.device_map)
         else:
             print("no GPU is running!!!")
 
@@ -88,7 +90,6 @@ class LoadModel:
             assert gpu_target < num_gpus
             device_map[f'transformer.layers.{i}'] = gpu_target
             used += 1
-
         return device_map
 
     def unload_model(self):
