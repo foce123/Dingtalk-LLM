@@ -15,14 +15,14 @@ class LoadModel:
         self.tokenizer = None
         self.model_name = LLM_MODEL
 
-    def load_model(self, model_name):
+    def load_model(self):
         """加载自定义路径模型"""
-        print(f"Loading {model_name}...")
+        print(f"Loading {self.model_name}...")
         t0 = time.time()
 
-        model_path = Path(Path.cwd()+f'/model/{model_name}')
+        model_path = Path(Path.cwd()+f'/model/{self.model_name}')
 
-        if 'chatglm' in model_name.lower():
+        if 'chatglm' in self.model_name.lower():
             LoaderClass = AutoModel
         else:
             LoaderClass = AutoModelForCausalLM
