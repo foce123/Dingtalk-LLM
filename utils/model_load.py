@@ -3,6 +3,7 @@ import time
 from pathlib import Path
 from config.model_config import *
 import torch
+from typing import Dict
 import transformers
 from transformers import (AutoConfig, AutoModel, AutoModelForCausalLM,
                           AutoTokenizer, BitsAndBytesConfig, LlamaTokenizer)
@@ -20,7 +21,7 @@ class LoadModel:
         print(f"Loading {self.model_name}...")
         t0 = time.time()
 
-        model_path = Path(Path.cwd()+f'/model/{self.model_name}')
+        model_path = Path(str(Path.cwd())+f'/model/{self.model_name}')
 
         if 'chatglm' in self.model_name.lower():
             LoaderClass = AutoModel
@@ -71,6 +72,24 @@ class LoadModel:
                 print("如果您使用的是 macOS 建议将 pytorch 版本升级至 2.0.0 或更高版本，以支持及时清理 torch 产生的内存占用。")
         else:
             print("未检测到其他cuda或mps，暂不支持清理显存")
+
+    def chatglm_conf_device_map(self, num_gpus: int) -> Dict[str, int]:
+        num_trans_layers = 28
+        per_gpu_layers = 30 / num_gpus
+        device_map = {f'transformer.word_embeddings': 0,
+                      f'transformer.final_layernorm': 0, 'lm_head': 0, }
+
+        used = 2
+        gpu_target = 0
+        for i in range(num_trans_layers):
+            if used >= per_gpu_layers:
+                gpu_target += 1
+                used = 0
+            assert gpu_target < num_gpus
+            device_map[f'transformer.layers.{i}'] = gpu_target
+            used += 1
+
+        return device_map
 
     def unload_model(self):
         del self.model
