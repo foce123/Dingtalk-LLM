@@ -34,10 +34,10 @@ class LoadModel:
             if num_gpus < 2:
                 model = LoaderClass.from_pretrained(model_path, trust_remote_code=True).half().cuda()
             else:
-                from accelerate import dispatch_model
+                #from accelerate import dispatch_model
                 self.device_map = self.chatglm_conf_device_map(num_gpus)
-                model = LoaderClass.from_pretrained(model_path, trust_remote_code=True).half()
-                model = dispatch_model(model, device_map=self.device_map)
+                model = LoaderClass.from_pretrained(model_path, trust_remote_code=True).half().cuda()
+                #model = dispatch_model(model, device_map=self.device_map)
         else:
             print("no GPU is running!!!")
 
@@ -81,8 +81,7 @@ class LoadModel:
         num_trans_layers = 28
         per_gpu_layers = 30 / num_gpus
         device_map = {f'transformer.word_embeddings': 0,
-                      f'transformer.final_layernorm': 0, 'lm_head': 0,
-                      f'base_model.model.lm_head': 0, }
+                      f'transformer.final_layernorm': 0, 'lm_head': 0, }
         used = 2
         gpu_target = 0
         for i in range(num_trans_layers):
