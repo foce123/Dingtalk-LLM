@@ -80,7 +80,6 @@ class LoadModel:
         per_gpu_layers = 30 / num_gpus
         device_map = {f'transformer.word_embeddings': 0,
                       f'transformer.final_layernorm': 0, 'lm_head': 0, }
-
         used = 2
         gpu_target = 0
         for i in range(num_trans_layers):
@@ -100,7 +99,7 @@ class LoadModel:
 
     def reload_model(self):
         self.unload_model()
-        self.model, self.tokenizer = self.load_model(self.modle_name)
+        self.model, self.tokenizer = self.load_model()
         self.model = self.model.eval()
 
     def model_chat(self, prompt: str, history: List[list[str]] = []):
