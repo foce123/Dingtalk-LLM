@@ -3,7 +3,7 @@ import time
 from pathlib import Path
 from config.model_config import *
 import torch
-from typing import Dict
+from typing import Dict, List
 import transformers
 from transformers import (AutoConfig, AutoModel, AutoModelForCausalLM,
                           AutoTokenizer, BitsAndBytesConfig, LlamaTokenizer)
@@ -102,3 +102,9 @@ class LoadModel:
         self.unload_model()
         self.model, self.tokenizer = self.load_model(self.modle_name)
         self.model = self.model.eval()
+
+    def model_chat(self, prompt: str, history: List[list[str]] = []):
+        response, _ = self.model.chat(self.tokenizer, prompt, history=history[-LLM_HISTORY_LEN:] if LLM_HISTORY_LEN > 0 else [])
+        self.torch_gc()
+        history += [[prompt, response]]
+        return response, history
