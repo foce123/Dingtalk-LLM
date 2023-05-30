@@ -54,9 +54,6 @@ class LoadModel:
         else:
             tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
         print(f"Loaded the model in {(time.time() - t0):.2f} sedconds.")
-        model = model.eval()
-        response, history = model.chat(tokenizer, "你好", history=[])
-        print(response, history)
         return model, tokenizer
 
     def torch_gc(self):
