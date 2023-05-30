@@ -53,7 +53,6 @@ class LoadModel:
                 pass
         else:
             tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
-
         print(f"Loaded the model in {(time.time() - t0):.2f} sedconds.")
         return model, tokenizer
 
@@ -79,7 +78,8 @@ class LoadModel:
         num_trans_layers = 28
         per_gpu_layers = 30 / num_gpus
         device_map = {f'transformer.word_embeddings': 0,
-                      f'transformer.final_layernorm': 0, 'lm_head': 0, }
+                      f'transformer.final_layernorm': 0, 'lm_head': 0,
+                      f'base_model.model.lm_head': 0, }
         used = 2
         gpu_target = 0
         for i in range(num_trans_layers):
