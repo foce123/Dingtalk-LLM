@@ -35,8 +35,10 @@ class LoadModel:
                 model = LoaderClass.from_pretrained(model_path, trust_remote_code=True).half().cuda()
             else:
                 #from accelerate import dispatch_model
-                self.device_map = self.chatglm_conf_device_map(num_gpus)
-                model = LoaderClass.from_pretrained(model_path, trust_remote_code=True).half().cuda()
+                from accelerate import load_checkpoint_and_dispatch
+                # self.device_map = self.chatglm_conf_device_map(num_gpus)
+                model = LoaderClass.from_pretrained(model_path, trust_remote_code=True)
+                model = load_checkpoint_and_dispatch(model, model_path, device_map="auto", offload_folder="offload", offload_state_dict=True, no_split_module_classes=["GLMBlock"]).half()
                 #model = dispatch_model(model, device_map=self.device_map)
         else:
             print("no GPU is running!!!")
