@@ -37,8 +37,10 @@ class LoadModel:
                 #from accelerate import dispatch_model
                 from accelerate import load_checkpoint_and_dispatch
                 # self.device_map = self.chatglm_conf_device_map(num_gpus)
-                model = LoaderClass.from_pretrained(model_path, trust_remote_code=True)
-                model = model.eval()
+                config = AutoConfig.from_pretrained(model_path, trust_remote_code=True)
+                # model = LoaderClass.from_pretrained(model_path, trust_remote_code=True)
+                model = LoaderClass.from_config(config, trust_remote_code=True)
+                # model = model.eval()
                 model = load_checkpoint_and_dispatch(model, model_path, device_map="auto", offload_folder="offload", offload_state_dict=True, no_split_module_classes=["GLMBlock"]).half()
                 #model = dispatch_model(model, device_map=self.device_map)
         else:
@@ -106,6 +108,6 @@ class LoadModel:
 
     def model_chat(self, prompt: str, history: List[list[str]] = []):
         response, _ = self.model.chat(self.tokenizer, prompt, history=history[-LLM_HISTORY_LEN:] if LLM_HISTORY_LEN > 0 else [])
-        self.torch_gc()
+        # self.torch_gc()
         history += [[prompt, response]]
         return response, history
