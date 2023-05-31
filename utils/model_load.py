@@ -105,6 +105,6 @@ class LoadModel:
 
     def model_chat(self, prompt: str, history: List[list[str]] = []):
         response, _ = self.model.chat(self.tokenizer, prompt, history=history[-LLM_HISTORY_LEN:] if LLM_HISTORY_LEN > 0 else [])
-        # self.torch_gc()
+        self.torch_gc()
         history += [[prompt, response]]
         return response, history

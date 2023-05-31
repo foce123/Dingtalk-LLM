@@ -4,6 +4,7 @@ import tornado
 from utils.route import route
 import app
 
+
 class Application(tornado.web.Application):
     def __init__(self):
         routed_handlers = route.get_routes()

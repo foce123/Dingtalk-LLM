@@ -1,27 +1,23 @@
 import json
-
+from utils.model_load import LoadModel
 from utils.route import route
 from utils.log import logger
 
-import openai
 import tornado.web
 import os
 import requests
 import traceback
 
-openai.api_key = os.environ.get("API_KEY")
-dd_token = os.environ.get("DD_TOKEN")
+model_ins = LoadModel()
+model_ins.load_model()
 
-# Set up the model and prompt
-model_engine = "gpt-3.5-turbo"
-
-retry_times = 5
-
+retry_times = 3
 global_dict = {}
 
 
 @route("/")
 class ChatHandler(tornado.web.RequestHandler):
+    webhook = ""
 
     def get(self):
         return self.write_json({"ret": 200})
@@ -31,6 +27,7 @@ class ChatHandler(tornado.web.RequestHandler):
             request_data = self.request.body
             data = json.loads(request_data)
             prompt = data['text']['content']
+            self.webhook = data['SessionWebhook']
             if "/clear" in prompt:
                 self.clear_context(data)
                 self.notify_dingding('已清空上下文')
@@ -38,29 +35,16 @@ class ChatHandler(tornado.web.RequestHandler):
 
             for i in range(retry_times):
                 try:
-                    context = self.get_context(data)
-                    new_context = [
-                        {"role": "user", "content": prompt}]
-                    completion = openai.ChatCompletion.create(
-                        model=model_engine,
-                        messages=context + new_context,
-                    )
-                    response = completion.choices[0].message.content
-                    usage = completion.usage
+                    response, history = model_ins.model_chat(prompt)
+                    if len(history) > 0:
+                        response, history = model_ins.model_chat(prompt, history=history)
                     break
                 except:
                     traceback.print_exc()
                     logger.info(f"failed, retry")
                     continue
-
             logger.info(f"parse response: {response}")
-            self.set_context(data, response)
-            self.notify_dingding(
-                response + '\n' + '-=-=-=-=-=-=-=-=-=' + '\n' + '本次对话 Tokens 用量 [' + str(usage.total_tokens) + '/4096]')
-            if (usage.total_tokens >= 4096):
-                self.clear_context(data)
-                self.notify_dingding('超出 Tokens 限制，清空上下文')
-            return self.write_json({"ret": 200})
+            self.notify_dingding(response)
         except:
             traceback.print_exc()
             return self.write_json({"ret": 500})
@@ -108,9 +92,8 @@ class ChatHandler(tornado.web.RequestHandler):
             }
         }
 
-        notify_url = f"https://oapi.dingtalk.com/robot/send?access_token={dd_token}"
         try:
-            r = requests.post(notify_url, json=data)
+            r = requests.post(self.webhook, json=data)
             reply = r.json()
             logger.info("dingding: " + str(reply))
         except Exception as e:
