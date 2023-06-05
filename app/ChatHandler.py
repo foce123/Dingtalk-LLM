@@ -26,6 +26,7 @@ class ChatHandler(tornado.web.RequestHandler):
         try:
             request_data = self.request.body
             data = json.loads(request_data)
+            print(data)
             prompt = data['text']['content']
             self.webhook = data['SessionWebhook']
             if "/clear" in prompt:
