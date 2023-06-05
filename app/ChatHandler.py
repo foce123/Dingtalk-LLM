@@ -28,7 +28,7 @@ class ChatHandler(tornado.web.RequestHandler):
             data = json.loads(request_data)
             print(data)
             prompt = data['text']['content']
-            self.webhook = data['SessionWebhook']
+            self.webhook = data['sessionWebhook']
             if "/clear" in prompt:
                 self.clear_context(data)
                 self.notify_dingding('已清空上下文')
