@@ -1,8 +1,10 @@
+from abc import ABC
 from utils.model_load import LoadModel
 from typing import Optional, List
+from langchain.llms.base import LLM
 
 
-class ChatGLM:
+class ChatGLM(LLM, ABC):
     max_token: int = 10000
     temperature: float = 0.01
     top_p = 0.9
@@ -10,6 +12,7 @@ class ChatGLM:
     history_len: int = 10
 
     def __init__(self, checkPoint: LoadModel = None):
+        super().__init__()
         self.checkPoint = checkPoint
 
     @property
