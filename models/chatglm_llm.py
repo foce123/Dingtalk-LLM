@@ -2,7 +2,7 @@ from utils.model_load import LoadModel
 from typing import Optional, List
 
 
-class ChatGLM():
+class ChatGLM:
     max_token: int = 10000
     temperature: float = 0.01
     top_p = 0.9
@@ -10,7 +10,6 @@ class ChatGLM():
     history_len: int = 10
 
     def __init__(self, checkPoint: LoadModel = None):
-        super().__init__()
         self.checkPoint = checkPoint
 
     @property
