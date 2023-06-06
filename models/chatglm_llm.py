@@ -19,6 +19,10 @@ class ChatGLM(LLM, ABC):
     def _llm_type(self) -> str:
         return "ChatGLM"
 
+    @property
+    def _check_point(self) -> LoaderCheckPoint:
+        return self.checkPoint
+
     def _call(self, prompt: str) -> str:
         response, _ = self.checkPoint.model.chat(
             self.checkPoint.tokenizer,
