@@ -19,7 +19,7 @@ class ChatGLM(LLM, ABC):
     def _llm_type(self) -> str:
         return "ChatGLM"
 
-    def _cal(self, prompt: str) -> str:
+    def _call(self, prompt: str) -> str:
         response, _ = self.checkPoint.model.chat(
             self.checkPoint.tokenizer,
             prompt,
