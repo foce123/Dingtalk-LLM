@@ -20,7 +20,7 @@ class ChatGLM(LLM, ABC):
         return "ChatGLM"
 
     @property
-    def _check_point(self) -> LoaderCheckPoint:
+    def _check_point(self) -> LoadModel:
         return self.checkPoint
 
     def _call(self, prompt: str) -> str:
