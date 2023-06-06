@@ -20,8 +20,12 @@ class ChatGLM(LLM, ABC):
         return "ChatGLM"
 
     @property
-    def _check_point(self) -> LoadModel:
+    def _checkPoint(self) -> LoadModel:
         return self.checkPoint
+
+    @property
+    def _history_len(self) -> int:
+        return self.history_len
 
     def _call(self, prompt: str) -> str:
         response, _ = self.checkPoint.model.chat(
