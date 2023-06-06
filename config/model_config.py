@@ -8,6 +8,21 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 logging.basicConfig(format=LOG_FORMAT)
 
+llm_model_dict = {
+    "chatglm-6b": {
+        "name": "chatglm-6b",
+        "pretrained_model_name": "THUDM/chatglm-6b",
+        "local_model_path": None,
+        "provides": "ChatGLM"
+    },
+    "bgi-med-chatglm-6b": {
+        "name": "bgi-med-chatglm-6b",
+        "pretrained_model_name": "bgi-med-chatglm-6b",
+        "local_model_path": None,
+        "provides": "ChatGLM"
+    },
+}
+
 # LLM model name
 LLM_MODEL = "bgi-med-chatglm-6b"
 

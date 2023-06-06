@@ -1,15 +1,20 @@
 import json
+import sys
+
 from utils.model_load import LoadModel
 from utils.route import route
 from utils.log import logger
 
 import tornado.web
-import os
+from config.model_config import llm_model_dict, LLM_MODEL
 import requests
 import traceback
 
 model_ins = LoadModel()
 model_ins.load_model()
+llm_model_info = llm_model_dict[llm_model_dict[LLM_MODEL]]
+provides_class = getattr(sys.modules['models'], llm_model_info["provides"])
+modelInsLLM = provides_class(checkpoint=model_ins)
 
 retry_times = 3
 global_dict = {}
@@ -36,19 +41,22 @@ class ChatHandler(tornado.web.RequestHandler):
 
             for i in range(retry_times):
                 try:
-                    response, history = model_ins.model_chat(prompt)
+                    # response, history = model_ins.model_chat(prompt)
+                    response, history = modelInsLLM.getAnswer(prompt=prompt)
                     if len(history) > 0:
-                        response, history = model_ins.model_chat(prompt, history=history)
+                        # response, history = model_ins.model_chat(prompt, history=history)
+                        response, history = modelInsLLM.getAnswer(prompt=prompt, history=history)
                     break
                 except:
                     traceback.print_exc()
                     logger.info(f"failed, retry")
                     continue
-            logger.info(f"parse response: {response}")
+                logger.info(f"parse response: {response}")
             self.notify_dingding(response)
         except:
             traceback.print_exc()
             return self.write_json({"ret": 500})
+        history += history
 
     def get_context(self, data):
         storeKey = self.get_context_key(data)
