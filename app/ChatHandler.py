@@ -12,7 +12,7 @@ import traceback
 
 model_ins = LoadModel()
 model_ins.load_model()
-llm_model_info = llm_model_dict[llm_model_dict[LLM_MODEL]]
+llm_model_info = llm_model_dict[LLM_MODEL]
 provides_class = getattr(sys.modules['models'], llm_model_info["provides"])
 modelInsLLM = provides_class(checkpoint=model_ins)
 
