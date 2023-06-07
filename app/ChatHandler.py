@@ -12,11 +12,6 @@ import requests
 import traceback
 from models import chatglm_llm
 
-model_ins = LoadModel()
-model_ins.load_model()
-llm_model_info = llm_model_dict[LLM_MODEL]
-provides_class = getattr(chatglm_llm, llm_model_info["provides"])
-modelInsLLM = provides_class(checkpoint=model_ins)
 
 retry_times = 3
 global_dict = {}
