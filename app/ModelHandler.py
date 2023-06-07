@@ -1,6 +1,5 @@
 import sentence_transformers
-from duckduckgo_search import ddg
-from duckduckgo_search.utils import SESSION
+from duckduckgo_search import ddg, DDGS
 from langchain.chains import RetrievalQA
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 from langchain.vectorstores import FAISS
@@ -22,11 +21,8 @@ llm_model_list = []
 
 
 def search_web(query):
-    SESSION.proxies = {
-        "http": f"socks5h://localhost:7890",
-        "https": f"socks5h://localhost:7890"
-    }
-    results = ddg(query)
+    with DDGS(proxies="socks5://localhost:9150", timeout=20) as ddgs:
+        results = ddg(query)
     web_content = ''
     if results:
         for result in results:
