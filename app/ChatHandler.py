@@ -43,17 +43,12 @@ class ChatHandler(tornado.web.RequestHandler):
 
             for i in range(retry_times):
                 try:
-                    # response, history = model_ins.model_chat(prompt)
-                    response, history = modelInsLLM.getAnswer(prompt=prompt)
-                    if len(history) > 0:
-                        # response, history = model_ins.model_chat(prompt, history=history)
-                        response, history = modelInsLLM.getAnswer(prompt=prompt, history=history)
+                    pass
                     break
                 except:
-                    traceback.print_exc()
-                    logger.info(f"failed, retry")
+                    pass
                     continue
-                logger.info(f"parse response: {response}")
+                logger.info(f"pass")
             self.notify_dingding(response)
         except:
             traceback.print_exc()
