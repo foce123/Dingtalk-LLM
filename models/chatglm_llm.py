@@ -47,7 +47,7 @@ class ChatGLM(LLM):
     top_p = 0.9
     history = []
     model_type: str = "chatglm"
-    model_name_or_path: str = llm_model,
+    model_name_or_path: str = "llms/"+llm_model,
     tokenizer: object = None
     model: object = None
 
