@@ -8,29 +8,49 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 logging.basicConfig(format=LOG_FORMAT)
 
+embedding_model_dict = {
+    "ernie-tiny": "nghuyong/ernie-3.0-nano-zh",
+    "ernie-base": "nghuyong/ernie-3.0-base-zh",
+    "ernie-medium": "nghuyong/ernie-3.0-medium-zh",
+    "ernie-xbase": "nghuyong/ernie-3.0-xbase-zh",
+    "text2vec-base": "GanymedeNil/text2vec-base-chinese",
+    'simbert-base-chinese': 'WangZeJun/simbert-base-chinese',
+    'paraphrase-multilingual-MiniLM-L12-v2': "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+}
+
 llm_model_dict = {
-    "chatglm-6b": {
-        "name": "chatglm-6b",
-        "pretrained_model_name": "THUDM/chatglm-6b",
-        "local_model_path": None,
-        "provides": "ChatGLM"
+    "chatglm": {
+        "ChatGLM-6B": "THUDM/chatglm-6b",
+        "ChatGLM-6B-int4": "THUDM/chatglm-6b-int4",
+        "ChatGLM-6B-int8": "THUDM/chatglm-6b-int8",
+        "ChatGLM-6b-int4-qe": "THUDM/chatglm-6b-int4-qe"
+    },
+    "belle": {
+        "BELLE-LLaMA": "belle",
+    },
+    "vicuna": {
+        "Vicuna-LLaMA": "vicuna",
     },
     "bgi-med-chatglm-6b": {
-        "name": "bgi-med-chatglm-6b",
-        "pretrained_model_name": "bgi-med-chatglm-6b",
-        "local_model_path": None,
-        "provides": "ChatGLM"
+        "bgi-med-chatglm-6b": "bgi-med-chatglm-6b",
     },
 }
 
 # LLM model name
 LLM_MODEL = "bgi-med-chatglm-6b"
+EMBEDDING_MODEL = "text2vec-base"
+MODEL_CACHE_PATH = os.path.join(os.path.dirname(__file__), 'model_cache')
 
 # LLM streaming reponse
 STREAMING = True
 
+# LLM embeding
+IS_EMBEDDING = False
+
 # LLM running device
 LLM_DEVICE = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu"
+EMBEDDING_DEVICE = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu"
+num_gpus = torch.cuda.device_count()
 
 # 基于上下文的prompt模版，请务必保留"{question}"和"{context}"
 PROMPT_TEMPLATE = """已知信息：
