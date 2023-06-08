@@ -95,6 +95,7 @@ class ModelQALLM:
             from langchain import LLMChain
             answer_chain = LLMChain(prompt=prompt, llm=self.llm)
             result = answer_chain.predict(context="", question=query)
+            print(result)
         return result
 
 model_chat_llm = ModelQALLM()
