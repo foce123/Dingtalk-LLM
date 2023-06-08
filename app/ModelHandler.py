@@ -101,6 +101,7 @@ def init_model():
         model_chat_llm.llm._call("你好")
         return """初始模型已成功加载，可以开始对话"""
     except Exception as e:
+        print(e)
         return """模型未成功加载，请重新选择模型后点击"重新加载模型"按钮"""
 
 def clear_session():
