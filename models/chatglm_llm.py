@@ -88,8 +88,10 @@ class ChatGLM(LLM):
                     if device_map is None:
                         device_map = auto_configure_device_map(num_gpus)
                     self.model = dispatch_model(model, device_map=device_map)
+                    print("accelerating...")
             else:
                 self.model = (AutoModel.from_pretrained(
                     self.model_name_or_path,
                     trust_remote_code=True, cache_dir=os.path.join(MODEL_CACHE_PATH, self.model_name_or_path)).float().to(llm_device))
             self.model = self.model.eval()
+            print("model is eval")
