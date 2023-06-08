@@ -33,6 +33,7 @@ def search_web(query):
 class ModelQALLM:
     llm: object = None
     embeddings: object = None
+    is_embedding: bool = False
 
     def init_model_config(self, isembedding: bool = False):
         if isembedding:
