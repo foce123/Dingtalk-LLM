@@ -12,6 +12,11 @@ import requests
 import traceback
 from models import chatglm_llm
 
+import ModelHandler
+
+ins = ModelHandler()
+ins.init_model()
+ins.
 
 retry_times = 3
 global_dict = {}

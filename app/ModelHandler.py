@@ -119,7 +119,7 @@ def reinit_model(is_embedding=is_embedding):
         model_status = """模型未成功重新加载，请点击重新加载模型"""
     return [[None, model_status]]
 
-def predict(input, use_web, top_k, history_len, temperature, top_p, history=None):
+def predict(input, use_web: bool = False, top_k: int = 6, history_len: int = 3, temperature: float = 0.01, top_p: float = 0.1, history=None):
     if history == None:
         history = []
     if use_web == 'True':
