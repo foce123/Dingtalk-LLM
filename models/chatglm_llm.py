@@ -90,4 +90,4 @@ class ChatGLM(LLM):
             self.model = self.model.eval()
             print("model is eval")
         elif 'bgi-med-chatglm-6b' == self.model_name_or_path.lower():
-            print(self.model_name_or_path)
+            print(f"{self.model_name_or_path} loading...")
