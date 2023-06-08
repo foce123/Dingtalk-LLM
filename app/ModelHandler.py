@@ -42,7 +42,7 @@ class ModelQALLM:
                 device=EMBEDDING_DEVICE,
                 cache_folder=os.path.join(MODEL_CACHE_PATH,self.embeddings.model_name))
         self.llm = ChatGLM()
-        if 'chatglm' in llm_model.lower():
+        if 'chatglm' == llm_model.lower():
             self.llm.model_type = 'chatglm'
             self.llm.model_name_or_path = llm_model_dict['chatglm'][llm_model]
         elif 'belle' in llm_model.lower():
@@ -51,6 +51,9 @@ class ModelQALLM:
         elif 'vicuna' in llm_model.lower():
             self.llm.model_type = 'vicuna'
             self.llm.model_name_or_path = llm_model_dict['vicuna'][llm_model]
+        elif 'bgi-med-chatglm-6b' == llm_model.lower():
+            self.llm.model_type = 'chatglm'
+            self.llm.model_name_or_path = llm_model_dict['bgi-med-chatglm-6b'][llm_model]
         self.llm.load_llm(llm_device=LLM_DEVICE, num_gpus=num_gpus)
 
     # def init_knowledge_vector_store(self, filepath):
