@@ -137,8 +137,8 @@ def predict(input, use_web: bool = False, top_k: int = 6, history_len: int = 3, 
         history=history)
     #history.append((input, resp['result']))
     print(type(resp))
-    history.append((input,resp))
-    return '', history, history
+    history.append((input, resp))
+    return resp, history
 
-model_status = init_model()
-print(model_status)
+# model_status = init_model()
+# print(model_status)

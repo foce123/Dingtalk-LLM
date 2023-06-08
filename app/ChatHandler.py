@@ -10,7 +10,9 @@ import tornado.web
 from config.model_config import llm_model_dict, LLM_MODEL
 import requests
 import traceback
-from models import chatglm_llm
+
+import ModelHandler
+
 
 
 retry_times = 3
