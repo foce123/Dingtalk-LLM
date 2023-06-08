@@ -51,8 +51,8 @@ class ChatGLM(LLM):
     tokenizer: object = None
     model: object = None
 
-    def __init__(self):
-        super().__init__()
+    # def __init__(self):
+    #     super().__init__()
 
     @property
     def _llm_type(self) -> str:
@@ -60,13 +60,7 @@ class ChatGLM(LLM):
 
     def _call(self, prompt: str, stop: Optional[List[str]] = None) -> str:
         if self.model_type == 'chatglm':
-            response, _ = self.model.chat(
-                self.tokenizer,
-                prompt,
-                history=self.history,
-                max_length=self.max_token,
-                temperature=self.temperature,
-            )
+            response, _ = self.model.chat(self.tokenizer, prompt, history=self.history, max_length=self.max_token, temperature=self.temperature)
             torch_gc()
             if stop is not None:
                 response = enforce_stop_tokens(response, stop)
