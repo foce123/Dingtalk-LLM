@@ -3,7 +3,7 @@ from typing import Dict
 
 from typing import Optional, List
 # from langchain.llms.base import LLM
-# from config.model_config import *
+from config.model_config import *
 from langchain.llms.utils import enforce_stop_tokens
 from transformers import AutoModel, AutoModelForCausalLM, AutoTokenizer
 
