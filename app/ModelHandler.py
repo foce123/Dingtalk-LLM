@@ -22,7 +22,7 @@ llm_model_list = []
 
 def search_web(query):
     with DDGS(proxies="socks5://localhost:9150", timeout=20) as ddgs:
-        results = ddg(query)
+        results = ddgs(query)
     web_content = ''
     if results:
         for result in results:
@@ -133,3 +133,4 @@ def predict(input, use_web, top_k, history_len, temperature, top_p, history=None
     return '', history, history
 
 model_status = init_model()
+print(model_status)
