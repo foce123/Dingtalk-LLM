@@ -3,17 +3,17 @@ from typing import Dict
 
 from typing import Optional, List
 # from langchain.llms.base import LLM
-from config.model_config import *
+# from config.model_config import *
 from langchain.llms.utils import enforce_stop_tokens
 from transformers import AutoModel, AutoModelForCausalLM, AutoTokenizer
 
 
-DEVICE = LLM_DEVICE
-DEVICE_ID = "0"
-CUDA_DEVICE = f"{DEVICE}:{DEVICE_ID}" if DEVICE_ID else DEVICE
+# DEVICE = LLM_DEVICE
+# DEVICE_ID = "0"
+# CUDA_DEVICE = f"{DEVICE}:{DEVICE_ID}" if DEVICE_ID else DEVICE
 
-llm_model = LLM_MODEL
-embedding_model = EMBEDDING_MODEL
+# llm_model = LLM_MODEL
+# embedding_model = EMBEDDING_MODEL
 
 def torch_gc():
     if torch.cuda.is_available():
