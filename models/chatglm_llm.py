@@ -42,21 +42,22 @@ def auto_configure_device_map(num_gpus: int) -> Dict[str, int]:
 
 
 class ChatGLM():
-    max_token: int = 10000
-    temperature: float = 0.1
-    top_p = 0.9
-    history = []
-    model_type: str = "chatglm"
-    model_name_or_path: str = "llms/"+llm_model,
-    tokenizer: object = None
-    model: object = None
+    pass
+    # max_token: int = 10000
+    # temperature: float = 0.1
+    # top_p = 0.9
+    # history = []
+    # model_type: str = "chatglm"
+    # model_name_or_path: str = "llms/"+llm_model,
+    # tokenizer: object = None
+    # model: object = None
 
     # def __init__(self):
     #     super().__init__()
 
-    @property
-    def _llm_type(self) -> str:
-        return "ChatGLM"
+    # @property
+    # def _llm_type(self) -> str:
+    #     return "ChatGLM"
 
     # def _call(self, prompt: str, stop: Optional[List[str]] = None) -> str:
     #     if self.model_type == 'chatglm':
