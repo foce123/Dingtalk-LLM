@@ -13,7 +13,7 @@ import traceback
 
 import ModelHandler
 
-
+ModelHandler.init_model()
 
 retry_times = 3
 global_dict = {}
@@ -40,10 +40,11 @@ class ChatHandler(tornado.web.RequestHandler):
 
             for i in range(retry_times):
                 try:
-                    pass
+                    resp, history = ModelHandler.predict(prompt)
+                    print(resp)
                     break
                 except:
-                    pass
+                    traceback.print_exc()
                     continue
                 logger.info(f"pass")
             self.notify_dingding(response)
