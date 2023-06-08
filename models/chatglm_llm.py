@@ -58,14 +58,14 @@ class ChatGLM(LLM):
     def _llm_type(self) -> str:
         return "ChatGLM"
 
-    def _call(self, prompt: str, stop: Optional[List[str]] = None) -> str:
-        if self.model_type == 'chatglm':
-            response, _ = self.model.chat(self.tokenizer, prompt, history=self.history, max_length=self.max_token, temperature=self.temperature)
-            torch_gc()
-            if stop is not None:
-                response = enforce_stop_tokens(response, stop)
-            self.history = self.history + [[None, response]]
-        return response
+    # def _call(self, prompt: str, stop: Optional[List[str]] = None) -> str:
+    #     if self.model_type == 'chatglm':
+    #         response, _ = self.model.chat(self.tokenizer, prompt, history=self.history, max_length=self.max_token, temperature=self.temperature)
+    #         torch_gc()
+    #         if stop is not None:
+    #             response = enforce_stop_tokens(response, stop)
+    #         self.history = self.history + [[None, response]]
+    #     return response
 
     # def load_llm(self, llm_device=DEVICE, num_gpus='auto', device_map: Optional[Dict[str, int]] = None, **kwargs):
     #     if 'chatglm' in self.model_name_or_path.lower():
