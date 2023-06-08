@@ -2,7 +2,7 @@ import torch
 from typing import Dict
 
 from typing import Optional, List
-from langchain.llms.base import LLM
+# from langchain.llms.base import LLM
 from config.model_config import *
 from langchain.llms.utils import enforce_stop_tokens
 from transformers import AutoModel, AutoModelForCausalLM, AutoTokenizer
@@ -41,7 +41,7 @@ def auto_configure_device_map(num_gpus: int) -> Dict[str, int]:
     return device_map
 
 
-class ChatGLM(LLM):
+class ChatGLM():
     max_token: int = 10000
     temperature: float = 0.1
     top_p = 0.9
