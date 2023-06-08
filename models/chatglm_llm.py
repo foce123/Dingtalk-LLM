@@ -68,7 +68,7 @@ class ChatGLM(LLM):
         return response
 
     def load_llm(self, llm_device=DEVICE, num_gpus='auto', device_map: Optional[Dict[str, int]] = None, **kwargs):
-        if 'chatglm' in self.model_name_or_path.lower():
+        if 'chatglm' == self.model_name_or_path.lower():
             self.tokenizer = AutoTokenizer.from_pretrained(self.model_name_or_path, trust_remote_code=True, cache_dir=os.path.join(MODEL_CACHE_PATH, self.model_name_or_path))
             if torch.cuda.is_available() and llm_device.lower().startswith("cuda"):
                 num_gpus = torch.cuda.device_count()
@@ -89,3 +89,5 @@ class ChatGLM(LLM):
                     trust_remote_code=True, cache_dir=os.path.join(MODEL_CACHE_PATH, self.model_name_or_path)).float().to(llm_device))
             self.model = self.model.eval()
             print("model is eval")
+        elif 'bgi-med-chatglm-6b' == self.model_name_or_path.lower():
+            print(self.model_name_or_path)
