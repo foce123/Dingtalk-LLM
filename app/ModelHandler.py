@@ -135,7 +135,9 @@ def predict(input, use_web: bool = False, top_k: int = 6, history_len: int = 3, 
         temperature=temperature,
         top_p=top_p,
         history=history)
-    history.append((input, resp['result']))
+    #history.append((input, resp['result']))
+    print(type(resp))
+    history.append((input,resp))
     return '', history, history
 
 model_status = init_model()
