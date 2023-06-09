@@ -47,7 +47,7 @@ class ChatHandler(tornado.web.RequestHandler):
                     traceback.print_exc()
                     continue
                 logger.info(f"pass")
-            self.notify_dingding(response)
+            self.notify_dingding(resp)
         except:
             traceback.print_exc()
             return self.write_json({"ret": 500})
