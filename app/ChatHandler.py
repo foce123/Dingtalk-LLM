@@ -11,7 +11,7 @@ from config.model_config import llm_model_dict, LLM_MODEL
 import requests
 import traceback
 
-import ModelHandler
+from . import ModelHandler
 
 ModelHandler.init_model()
 
