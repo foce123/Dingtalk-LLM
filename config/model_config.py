@@ -1,5 +1,4 @@
-import torch.cuda
-import torch.backends
+import torch
 import logging, uuid, os
 
 
@@ -42,7 +41,7 @@ EMBEDDING_MODEL = "text2vec-base"
 MODEL_CACHE_PATH = os.path.join(os.path.dirname(__file__), 'model_cache')
 
 # LLM streaming reponse
-STREAMING = True
+STREAMING = False
 
 # LLM embeding
 IS_EMBEDDING = False
@@ -50,7 +49,6 @@ IS_EMBEDDING = False
 # LLM running device
 LLM_DEVICE = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu"
 EMBEDDING_DEVICE = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu"
-num_gpus = torch.cuda.device_count()
 
 # 基于上下文的prompt模版，请务必保留"{question}"和"{context}"
 PROMPT_TEMPLATE = """已知信息：

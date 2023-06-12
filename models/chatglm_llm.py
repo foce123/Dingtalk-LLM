@@ -89,6 +89,5 @@ class ChatGLM(LLM):
             #         trust_remote_code=True, cache_dir=os.path.join(MODEL_CACHE_PATH, self.model_name_or_path)).float().to(llm_device))
             self.model = (AutoModel.from_pretrained("llms/"+self.model_name_or_path, trust_remote_code=True, cache_dir=os.path.join(MODEL_CACHE_PATH, self.model_name_or_path), **kwargs).half().cuda())
             self.model = self.model.eval()
-            print("model is eval")
         else:
             print("loading error model name or path")

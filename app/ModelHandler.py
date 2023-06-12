@@ -1,5 +1,6 @@
 import sentence_transformers
-from duckduckgo_search import ddg, DDGS
+import torch
+from duckduckgo_search import DDGS
 from langchain.chains import RetrievalQA
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 from langchain.vectorstores import FAISS
@@ -12,7 +13,7 @@ embedding_model_dict = embedding_model_dict
 llm_model_dict = llm_model_dict
 EMBEDDING_DEVICE = EMBEDDING_DEVICE
 LLM_DEVICE = LLM_DEVICE
-num_gpus = num_gpus
+num_gpus = torch.cuda.device_count()
 llm_model = LLM_MODEL
 embedding_model = EMBEDDING_MODEL
 is_embedding = IS_EMBEDDING
@@ -22,7 +23,7 @@ llm_model_list = []
 
 def search_web(query):
     with DDGS(proxies="socks5://localhost:9150", timeout=20) as ddgs:
-        results = ddgs(query)
+        results = ddgs.answers(query)
     web_content = ''
     if results:
         for result in results:
@@ -41,27 +42,27 @@ class ModelQALLM:
             self.embeddings.client = sentence_transformers.SentenceTransformer(
                 self.embeddings.model_name,
                 device=EMBEDDING_DEVICE,
-                cache_folder=os.path.join(MODEL_CACHE_PATH,self.embeddings.model_name))
+                cache_folder=os.path.join(MODEL_CACHE_PATH, self.embeddings.model_name))
         self.llm = ChatGLM()
         if 'chatglm' == llm_model.lower():
             self.llm.model_type = 'chatglm'
             self.llm.model_name_or_path = llm_model_dict['chatglm'][llm_model]
-        elif 'belle' in llm_model.lower():
-            self.llm.model_type = 'belle'
-            self.llm.model_name_or_path = llm_model_dict['belle'][llm_model]
-        elif 'vicuna' in llm_model.lower():
-            self.llm.model_type = 'vicuna'
-            self.llm.model_name_or_path = llm_model_dict['vicuna'][llm_model]
+        # elif 'belle' in llm_model.lower():
+        #     self.llm.model_type = 'belle'
+        #     self.llm.model_name_or_path = llm_model_dict['belle'][llm_model]
+        # elif 'vicuna' in llm_model.lower():
+        #     self.llm.model_type = 'vicuna'
+        #     self.llm.model_name_or_path = llm_model_dict['vicuna'][llm_model]
         elif 'bgi-med-chatglm-6b' == llm_model.lower():
             self.llm.model_type = 'chatglm'
             self.llm.model_name_or_path = llm_model_dict['bgi-med-chatglm-6b'][llm_model]
         self.llm.load_llm(llm_device=LLM_DEVICE, num_gpus=num_gpus)
 
-    # def init_knowledge_vector_store(self, filepath):
-    #     docs = self.load_file(filepath)
-    #     vector_store = FAISS.from_documents(docs, self.embeddings)
-    #     vector_store.save_local('faiss_index')
-    #     return vector_store
+    def init_knowledge_vector_store(self, filepath):
+        docs = self.load_file(filepath)
+        vector_store = FAISS.from_documents(docs, self.embeddings)
+        vector_store.save_local('faiss_index')
+        return vector_store
 
     def get_llm_answer(self, query, web_content, top_k: int = 6, history_len: int = 3, temperature: float = 0.01, top_p: float = 0.1, history=[]):
         self.llm.temperature = temperature
