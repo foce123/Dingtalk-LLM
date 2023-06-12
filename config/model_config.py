@@ -61,6 +61,8 @@ LLM_HISTORY_LEN = 3
 
 FLAG_USER_NAME = uuid.uuid4().hex
 
+VS_PATH = "/data/vs_data/"
+
 logger.info(f"""
 loading model config
 llm device: {LLM_DEVICE}

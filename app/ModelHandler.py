@@ -5,6 +5,8 @@ from langchain.chains import RetrievalQA
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.prompts.prompt import PromptTemplate
+from langchain.document_loaders import UnstructuredFileLoader
+from chinese_text_splitter import ChineseTextSplitter
 
 from models.chatglm_llm import ChatGLM
 from config.model_config import *
@@ -35,6 +37,8 @@ class ModelQALLM:
     llm: object = None
     embeddings: object = None
     is_embedding: bool = False
+    history_len: int = 3
+    top_k: int = 6
 
     def init_model_config(self, isembedding: bool = False):
         if isembedding:
@@ -58,7 +62,7 @@ class ModelQALLM:
             self.llm.model_name_or_path = llm_model_dict['bgi-med-chatglm-6b'][llm_model]
         self.llm.load_llm(llm_device=LLM_DEVICE, num_gpus=num_gpus)
 
-    def init_knowledge_vector_store(self, filepath):
+    def init_vector_store(self, filepath):
         docs = self.load_file(filepath)
         vector_store = FAISS.from_documents(docs, self.embeddings)
         vector_store.save_local('faiss_index')
@@ -98,6 +102,18 @@ class ModelQALLM:
             result = answer_chain.predict(context="", question=query)
             print(result)
         return result
+
+    def load_file(self, filepath):
+        if filepath.lower().endswith(".pdf"):
+            loader = UnstructuredFileLoader(filepath)
+            textsplitter = ChineseTextSplitter(pdf=True)
+            docs = loader.load_and_split(textsplitter)
+        else:
+            loader = UnstructuredFileLoader(filepath, mode="elements")
+            textsplitter = ChineseTextSplitter(pdf=False)
+            docs = loader.load_and_split(text_splitter=textsplitter)
+        return docs
+
 
 model_chat_llm = ModelQALLM()
 
