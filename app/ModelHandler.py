@@ -7,6 +7,7 @@ from langchain.vectorstores import FAISS
 from langchain.prompts.prompt import PromptTemplate
 from langchain.document_loaders import UnstructuredFileLoader
 from chinese_text_splitter import ChineseTextSplitter
+from langchain.docstore.document import Document
 
 from models.chatglm_llm import ChatGLM
 from config.model_config import *
@@ -33,6 +34,14 @@ def search_web(query):
             web_content += result['body']
     return web_content
 
+def search_result2docs(search_results):
+    docs = []
+    for result in search_results:
+        doc = Document(page_content=result["snippet"] if "snippet" in result.keys() else "",
+                       metadata={"source": result["link"] if "link" in result.keys() else "",
+                                 "filename": result["title"] if "title" in result.keys() else ""})
+        docs.append(doc)
+    return docs
 
 class ModelQALLM:
     llm: object = None
@@ -143,7 +152,9 @@ def predict(input, use_web: bool = False, top_k: int = 6, history_len: int = 3, 
         history = []
     if use_web:
         from agent.bing_search import bing_search
-        web_content = bing_search(input)
+        results = bing_search(input)
+        result_docs = search_result2docs(results)
+        web_content = "\n".join([doc.page_content for doc in result_docs])
         # web_content = search_web(query=input)
     else:
         web_content = ''
