@@ -19,6 +19,7 @@ num_gpus = torch.cuda.device_count()
 llm_model = LLM_MODEL
 embedding_model = EMBEDDING_MODEL
 is_embedding = IS_EMBEDDING
+use_web = USE_WEB
 
 llm_model_list = []
 
@@ -140,8 +141,10 @@ def reinit_model(is_embedding=is_embedding):
 def predict(input, use_web: bool = False, top_k: int = 6, history_len: int = 3, temperature: float = 0.01, top_p: float = 0.1, history=None):
     if history == None:
         history = []
-    if use_web == 'True':
-        web_content = search_web(query=input)
+    if use_web:
+        from agent.bing_search import bing_search
+        web_content = bing_search(input)
+        # web_content = search_web(query=input)
     else:
         web_content = ''
     resp = model_chat_llm.get_llm_answer(

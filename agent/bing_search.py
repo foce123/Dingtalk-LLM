@@ -9,12 +9,10 @@ def bing_search(text, result_len=3):
         return [{"snippet": "please set BING_SUBSCRIPTION_KEY and BING_SEARCH_URL in os ENV",
                  "title": "env inof not fould",
                  "link": "https://python.langchain.com/en/latest/modules/agents/tools/examples/bing_search.html"}]
-    search = BingSearchAPIWrapper(bing_subscription_key=BING_SUBSCRIPTION_KEY,
-                                  bing_search_url=BING_SEARCH_URL)
+    search = BingSearchAPIWrapper(bing_subscription_key=BING_SUBSCRIPTION_KEY, bing_search_url=BING_SEARCH_URL)
     return search.results(text, result_len)
 
 
 if __name__ == "__main__":
     r = bing_search('python')
     print(r)
-    
