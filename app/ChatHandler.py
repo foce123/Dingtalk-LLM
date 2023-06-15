@@ -1,16 +1,10 @@
 import json
-import sys
-
-from utils.model_load import LoadModel
 from utils.route import route
 from utils.log import logger
 
-
 import tornado.web
-from config.model_config import llm_model_dict, LLM_MODEL
 import requests
 import traceback
-
 from . import ModelHandler
 
 ModelHandler.init_model()
