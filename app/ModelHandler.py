@@ -5,8 +5,6 @@ from langchain.chains import RetrievalQA
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.prompts.prompt import PromptTemplate
-from langchain.document_loaders import UnstructuredFileLoader
-from chinese_text_splitter import ChineseTextSplitter
 from langchain.docstore.document import Document
 
 from models.chatglm_llm import ChatGLM
@@ -20,6 +18,7 @@ num_gpus = torch.cuda.device_count()
 llm_model = LLM_MODEL
 embedding_model = EMBEDDING_MODEL
 is_embedding = IS_EMBEDDING
+vs_index = VS_INDEX
 use_web = USE_WEB
 
 llm_model_list = []
@@ -34,6 +33,7 @@ def search_web(query):
             web_content += result['body']
     return web_content
 
+
 def search_result2docs(search_results):
     docs = []
     for result in search_results:
@@ -42,6 +42,7 @@ def search_result2docs(search_results):
                                  "filename": result["title"] if "title" in result.keys() else ""})
         docs.append(doc)
     return docs
+
 
 class ModelQALLM:
     llm: object = None
@@ -72,12 +73,6 @@ class ModelQALLM:
             self.llm.model_name_or_path = llm_model_dict['bgi-med-chatglm-6b'][llm_model]
         self.llm.load_llm(llm_device=LLM_DEVICE, num_gpus=num_gpus)
 
-    def init_vector_store(self, filepath):
-        docs = self.load_file(filepath)
-        vector_store = FAISS.from_documents(docs, self.embeddings)
-        vector_store.save_local('faiss_index')
-        return vector_store
-
     def get_llm_answer(self, query, web_content, top_k: int = 6, history_len: int = 3, temperature: float = 0.01, top_p: float = 0.1, history=[]):
         self.llm.temperature = temperature
         self.llm.top_p = top_p
@@ -101,10 +96,11 @@ class ModelQALLM:
         prompt = PromptTemplate(template=prompt_template, input_variables=["context", "question"])
         self.llm.history = history[-self.history_len:] if self.history_len > 0 else []
         if is_embedding:
-            vector_store = FAISS.load_local('faiss_index', self.embeddings)
+            # select your vector store to load
+            vector_store = FAISS.load_local(vs_index, self.embeddings)
             answer_chain = RetrievalQA.from_llm(llm=self.llm, retriever=vector_store.as_retriever(search_kwargs={"k": self.top_k}), prompt=prompt)
             answer_chain.combine_documents_chain.document_prompt = PromptTemplate(input_variables=["page_content"], template="{page_content}")
-            answer_chain.return_source_documents = True
+            # answer_chain.return_source_documents = True
             result = answer_chain({"query": query})
         else:
             from langchain import LLMChain
@@ -113,19 +109,9 @@ class ModelQALLM:
             print(result)
         return result
 
-    def load_file(self, filepath):
-        if filepath.lower().endswith(".pdf"):
-            loader = UnstructuredFileLoader(filepath)
-            textsplitter = ChineseTextSplitter(pdf=True)
-            docs = loader.load_and_split(textsplitter)
-        else:
-            loader = UnstructuredFileLoader(filepath, mode="elements")
-            textsplitter = ChineseTextSplitter(pdf=False)
-            docs = loader.load_and_split(text_splitter=textsplitter)
-        return docs
-
 
 model_chat_llm = ModelQALLM()
+
 
 def init_model():
     try:
@@ -136,8 +122,10 @@ def init_model():
         print(e)
         return """模型未成功加载，请重新选择模型后点击"重新加载模型"按钮"""
 
+
 def clear_session():
     return '', None
+
 
 def reinit_model(is_embedding=is_embedding):
     try:
@@ -146,6 +134,7 @@ def reinit_model(is_embedding=is_embedding):
     except Exception as e:
         model_status = """模型未成功重新加载，请点击重新加载模型"""
     return [[None, model_status]]
+
 
 def predict(input, use_web: bool = False, top_k: int = 6, history_len: int = 3, temperature: float = 0.01, top_p: float = 0.1, history=None):
     if history == None:

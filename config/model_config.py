@@ -46,6 +46,8 @@ STREAMING = False
 # LLM embeding
 IS_EMBEDDING = False
 USE_WEB = False
+VS_PATH = "/data/vs_data/"
+VS_INDEX = "faiss_index"
 
 # LLM running device
 LLM_DEVICE = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu"
@@ -61,8 +63,6 @@ PROMPT_TEMPLATE = """已知信息：
 LLM_HISTORY_LEN = 3
 
 FLAG_USER_NAME = uuid.uuid4().hex
-
-VS_PATH = "/data/vs_data/"
 
 logger.info(f"""
 loading model config
