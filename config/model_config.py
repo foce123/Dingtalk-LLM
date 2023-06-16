@@ -61,6 +61,8 @@ PROMPT_TEMPLATE = """已知信息：
 
 # LLM input history length
 LLM_HISTORY_LEN = 3
+# 文本分句长度
+SENTENCE_SIZE = 100
 
 FLAG_USER_NAME = uuid.uuid4().hex
 
